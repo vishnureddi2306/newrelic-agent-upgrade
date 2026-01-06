@@ -1,0 +1,28 @@
+- name: Upgrade and configure New Relic Infrastructure Agent
+  hosts: windows
+  gather_facts: no
+
+  tasks:
+
+    - name: Ensure New Relic config directory exists
+      ansible.windows.win_file:
+        path: C:\Program Files\New Relic\newrelic-infra
+        state: directory
+
+    - name: Configure New Relic Infrastructure Agent
+      ansible.windows.win_copy:
+        dest: C:\Program Files\New Relic\newrelic-infra\newrelic-infra.yml
+        content: |
+          enable_process_process_metrics: false
+          status_server_enabled: true
+          status_server_port: 18003
+          license_key: "{{ newrelic_license_key }}"
+          metrics_process_sample_rate: -1
+          metrics_system_sample_rate: 120
+          metrics_storage_sample_ratio: 120
+
+    - name: Restart New Relic Infrastructure Agent service
+      ansible.windows.win_service:
+        name: newrelic-infra
+        state: restarted
+

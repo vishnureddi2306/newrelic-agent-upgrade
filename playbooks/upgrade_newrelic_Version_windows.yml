@@ -1,0 +1,25 @@
+---
+- name: Upgrade New Relic Infrastructure Agent to 1.66.1 (Windows)
+  hosts: windows
+  gather_facts: no
+
+  tasks:
+    - name: Ensure temp directory exists
+      ansible.windows.win_file:
+        path: C:\Temp
+        state: directory
+
+    - name: Download New Relic Infra Agent 1.66.1 MSI
+      ansible.windows.win_get_url:
+        url: https://download.newrelic.com/infrastructure_agent/windows/newrelic-infra.1.66.1.msi
+        dest: C:\Temp\newrelic-infra-1.66.1.msi
+
+    - name: Upgrade New Relic Infrastructure Agent (in-place)
+      ansible.windows.win_package:
+        path: C:\Temp\newrelic-infra-1.66.1.msi
+        state: present
+
+    - name: Ensure New Relic Infra service is running
+      ansible.windows.win_service:
+        name: newrelic-infra
+        state: started
