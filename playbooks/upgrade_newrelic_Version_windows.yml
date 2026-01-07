@@ -1,4 +1,4 @@
-- name: Upgrade New Relic Infrastructure Agent to 1.66.1 (Windows)
+- name: Upgrade New Relic Infrastructure Agent to 1.69.0 (Windows)
   hosts: windows
   gather_facts: no
 
@@ -21,7 +21,7 @@
 
     - name: Download New Relic Infrastructure Agent MSI
       ansible.windows.win_get_url:
-        url: https://download.newrelic.com/infrastructure_agent/windows/newrelic-infra-1.66.1.msi
+        url: https://download.newrelic.com/infrastructure_agent/windows/newrelic-infra.1.69.0.msi
         dest: C:\Temp\newrelic-infra.msi
 
     - name: Install / Upgrade New Relic Infrastructure Agent (in-place)
