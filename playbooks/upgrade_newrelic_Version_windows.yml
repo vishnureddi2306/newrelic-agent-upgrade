@@ -1,64 +1,26 @@
 ---
-- name: Upgrade New Relic Infrastructure Agent to 1.69.0 (Windows)
+- name: Upgrade New Relic Infrastructure Agent to 1.68.0 (Windows)
   hosts: windows
   gather_facts: no
 
-  vars:
-    nr_license_key: "{{ lookup('env', 'NEW_RELIC_LICENSE_KEY') }}"
-    nr_version: "1.69.0"
-    nr_msi_url: https://download.newrelic.com/infrastructure_agent/windows/newrelic-infra.1.69.0.msi
-    nr_temp_dir: "C:\\Temp"
-    nr_msi_path: "C:\\Temp\\newrelic-infra.msi"
-    nr_install_dir: "C:\\Program Files\\New Relic\\newrelic-infra"
-    nr_config_file: "C:\\Program Files\\New Relic\\newrelic-infra\\newrelic-infra.yml"
-
   tasks:
-
-    - name: Ensure Temp directory exists
+    - name: Ensure temp directory exists
       ansible.windows.win_file:
-        path: "{{ nr_temp_dir }}"
+        path: C:\Temp
         state: directory
 
-    - name: Ensure New Relic config directory exists
-      ansible.windows.win_file:
-        path: "{{ nr_install_dir }}"
-        state: directory
-
-    - name: Write New Relic license key to config file
-      ansible.windows.win_copy:
-        dest: "{{ nr_config_file }}"
-        content: |
-          license_key: "{{ nr_license_key }}"
-          log_level: info
-
-    - name: Download New Relic Infrastructure Agent MSI
+    - name: Download New Relic Infra Agent MSI
       ansible.windows.win_get_url:
-        url: "{{ nr_msi_url }}"
-        dest: "{{ nr_msi_path }}"
-        timeout: 300
-        force: yes
-      register: download_result
-      retries: 3
-      delay: 10
-      until: download_result is succeeded
+        url: https://download.newrelic.com/infrastructure_agent/windows/newrelic-infra.1.68.0.msi
+        dest: C:\Temp\newrelic-infra-1.66.1.msi
 
-    - name: Install / Upgrade New Relic Infrastructure Agent (in-place)
+    - name: Upgrade New Relic Infrastructure Agent (in-place)
       ansible.windows.win_package:
-        path: "{{ nr_msi_path }}"
+        path: C:\Temp\newrelic-infra-1.68.0.msi
         state: present
-        arguments: /qn
 
-    - name: Restart New Relic Infrastructure Agent
+    - name: Ensure New Relic Infra service is running
       ansible.windows.win_service:
         name: newrelic-infra
-        state: restarted
+        state: started
 
-    - name: Verify New Relic Infrastructure Agent version
-      ansible.windows.win_command: >
-        "{{ nr_install_dir }}\\newrelic-infra.exe --version"
-      register: nr_version_output
-      changed_when: false
-
-    - name: Show New Relic Infrastructure Agent version
-      debug:
-        msg: "{{ nr_version_output.stdout }}"
