@@ -1,25 +1,36 @@
----
 - name: Upgrade New Relic Infrastructure Agent to 1.66.1 (Windows)
   hosts: windows
   gather_facts: no
 
+  vars:
+    nr_license_key: "{{ lookup('env', 'NEW_RELIC_LICENSE_KEY') }}"
+
   tasks:
-    - name: Ensure temp directory exists
+
+    - name: Ensure New Relic config directory exists
       ansible.windows.win_file:
-        path: C:\Temp
+        path: C:\Program Files\New Relic\newrelic-infra
         state: directory
 
-    - name: Download New Relic Infra Agent 1.66.1 MSI
+    - name: Write New Relic license key to config file
+      ansible.windows.win_copy:
+        dest: C:\Program Files\New Relic\newrelic-infra\newrelic-infra.yml
+        content: |
+          license_key: "{{ nr_license_key }}"
+          log_level: info
+
+    - name: Download New Relic Infrastructure Agent MSI
       ansible.windows.win_get_url:
-        url: https://download.newrelic.com/infrastructure_agent/windows/newrelic-infra.1.66.1.msi
-        dest: C:\Temp\newrelic-infra-1.66.1.msi
+        url: https://download.newrelic.com/infrastructure_agent/windows/newrelic-infra-1.66.1.msi
+        dest: C:\Temp\newrelic-infra.msi
 
-    - name: Upgrade New Relic Infrastructure Agent (in-place)
+    - name: Install / Upgrade New Relic Infrastructure Agent (in-place)
       ansible.windows.win_package:
-        path: C:\Temp\newrelic-infra-1.66.1.msi
+        path: C:\Temp\newrelic-infra.msi
         state: present
+        arguments: /qn
 
-    - name: Ensure New Relic Infra service is running
+    - name: Restart New Relic Infrastructure Agent
       ansible.windows.win_service:
         name: newrelic-infra
-        state: started
+        state: restarted
