@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-- name: Upgrade New Relic Infrastructure Agent to 1.69.0 (Windows)
-=======
+
 - name: Upgrade New Relic Infrastructure Agent to 1.69.0 (Windows.)
->>>>>>> 64cfb9c (changed the version)
   hosts: windows
   gather_facts: no
 
