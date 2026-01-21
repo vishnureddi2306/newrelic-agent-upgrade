@@ -1,9 +1,7 @@
----
-- name: WinRM TestConnectivity
+- name: Test WinRM connectivity from AWX
   hosts: windows
   gather_facts: no
 
   tasks:
     - name: WinRM ping
-      ansible.windows.win_ping
-
+      ansible.windows.win_ping:
