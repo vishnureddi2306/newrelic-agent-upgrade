@@ -19,8 +19,14 @@
         path: C:\Temp\newrelic-infra-1.70.0.msi
         state: present
 
+    - name: Configure New Relic license key (from AWX)
+      ansible.windows.win_copy:
+        dest: 'C:\Program Files\New Relic\newrelic-infra\newrelic-infra.yml'
+        content: |
+          license_key: {{ newrelic_license_key }}
+
     - name: Ensure New Relic Infra service is running
       ansible.windows.win_service:
         name: newrelic-infra
         state: started
-
+        start_mode: auto 
