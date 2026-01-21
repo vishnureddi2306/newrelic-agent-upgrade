@@ -1,8 +1,4 @@
 ---
-- name: DEBUG - show if license key variable exists
-  ansible.windows.win_shell: |
-    if ("{{ newrelic_license_key }}" -eq "") { echo "LICENSE_KEY_EMPTY" } else { echo "LICENSE_KEY_PRESENT" }
-
 - name: Upgrade New Relic Infrastructure Agent to 1.70.0 (Windows)
   hosts: windows
   gather_facts: no
@@ -23,7 +19,7 @@
         path: C:\Temp\newrelic-infra-1.70.0.msi
         state: present
 
-    - name: Configure New Relic license key (from AWX)
+    - name: Configure New Relic license key 
       ansible.windows.win_copy:
         dest: 'C:\Program Files\New Relic\newrelic-infra\newrelic-infra.yml'
         content: |
