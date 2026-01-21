@@ -1,14 +1,7 @@
----
-- name: NPROD | WinRM HTTPS Test
-  hosts: all
+- name: Test WinRM over HTTPS
+  hosts: windows
   gather_facts: no
 
   tasks:
-    - name: WinRM ping
-      ansible.windows.win_ping
-
     - name: Get hostname
       ansible.windows.win_command: hostname
-
-    - debug:
-        msg: "WinRM HTTPS connection successful"
