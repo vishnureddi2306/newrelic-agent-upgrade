@@ -9,7 +9,7 @@
 
     - name: Install or Upgrade New Relic Infrastructure Agent
       ansible.windows.win_package:
-        path: https://download.newrelic.com/infrastructure_agent/windows/newrelic-infra.msi
+        path: https://download.newrelic.com/infrastructure_agent/windows/newrelic-infra.1.65.0.msi
         state: present
 
     - name: Ensure New Relic config directory exists
